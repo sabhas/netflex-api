@@ -15,6 +15,14 @@ export class UserController {
   ): Promise<UserDetailsResponse> {
     return updateUser(userId, body)
   }
+
+  public async deleteUser(
+    userId: number,
+    body: { password?: string },
+    isAdmin: boolean = false
+  ) {
+    return deleteUser(userId, isAdmin, body)
+  }
 }
 
 const updateUser = async (
@@ -55,4 +63,20 @@ const updateUser = async (
     profilePic: updatedUser.profilePic,
     isAdmin: updatedUser.isAdmin
   }
+}
+
+const deleteUser = async (
+  id: number,
+  isAdmin: boolean,
+  { password }: { password?: string }
+) => {
+  const user = await User.findOne({ id })
+  if (!user) throw new Error('User is not found.')
+
+  if (!isAdmin) {
+    const validPass = user.comparePassword(password!)
+    if (!validPass) throw new Error('Invalid password.')
+  }
+
+  await User.deleteOne({ id })
 }

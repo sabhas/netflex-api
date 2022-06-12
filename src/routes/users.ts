@@ -1,7 +1,10 @@
 import { Router } from 'express'
 import { UserController } from 'src/controllers'
 import { verifyToken, verifyAdminIfNeeded } from 'src/middlewares'
-import { updateUserValidation } from 'src/utils/validations'
+import {
+  updateUserValidation,
+  deleteUserValidation
+} from 'src/utils/validations'
 
 const userRouter = Router()
 const controller = new UserController()
@@ -22,3 +25,24 @@ userRouter.patch('/:id', verifyToken, verifyAdminIfNeeded, async (req, res) => {
     res.status(403).send(err.toString())
   }
 })
+
+userRouter.delete(
+  '/:id',
+  verifyToken,
+  verifyAdminIfNeeded,
+  async (req, res) => {
+    const { user } = req
+    const { id } = req.params
+
+    // only an admin can delete user without providing password
+    const { error, value: data } = deleteUserValidation(req.body, user!.isAdmin)
+    if (error) return res.status(400).send(error.details[0].message)
+
+    try {
+      await controller.deleteUser(parseInt(id), data, user!.isAdmin)
+      res.status(200).send('Account Deleted!')
+    } catch (err: any) {
+      res.status(403).send(err.toString())
+    }
+  }
+)

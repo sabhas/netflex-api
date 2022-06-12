@@ -18,3 +18,15 @@ export const updateUserValidation = (
   }
   return Joi.object(validationChecks).validate(data)
 }
+
+export const deleteUserValidation = (
+  data: any,
+  isAdmin: boolean = false
+): Joi.ValidationResult =>
+  Joi.object(
+    isAdmin
+      ? {}
+      : {
+          password: passwordSchema.required()
+        }
+  ).validate(data)

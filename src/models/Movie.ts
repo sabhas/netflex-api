@@ -44,6 +44,6 @@ const movieSchema = new Schema<IMovieDocument>(
 )
 movieSchema.plugin(AutoIncrement, { inc_field: 'id' })
 
-export const User: IMovieModel = model<IMovie, IMovieModel>('Movie', movieSchema)
+export const Movie: IMovieModel = model<IMovie, IMovieModel>('Movie', movieSchema)
 
-export default User
+export default Movie

@@ -1,3 +1,4 @@
+import { AES } from 'crypto-js'
 import mongoose, { Schema, model, Document, Model } from 'mongoose'
 const AutoIncrement = require('mongoose-sequence')(mongoose)
 
@@ -14,7 +15,9 @@ interface IUserDocument extends UserPayload, Document {
 }
 
 interface IUser extends IUserDocument {}
-interface IUserModel extends Model<IUser> {}
+interface IUserModel extends Model<IUser> {
+  hashPassword(password: string): string
+}
 
 const userSchema = new Schema<IUserDocument>(
   {
@@ -40,6 +43,11 @@ const userSchema = new Schema<IUserDocument>(
   { timestamps: true }
 )
 userSchema.plugin(AutoIncrement, { inc_field: 'id' })
+
+// Static Methods
+userSchema.static('hashPassword', (password: string): string => {
+  return AES.encrypt(password, process.env.SECRET_KEY as string).toString()
+})
 
 export const User: IUserModel = model<IUser, IUserModel>('User', userSchema)
 

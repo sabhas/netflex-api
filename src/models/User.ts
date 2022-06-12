@@ -12,10 +12,10 @@ export interface UserPayload {
 
 interface IUserDocument extends UserPayload, Document {
   id: number
+  comparePassword(password: string): string
 }
 
-interface IUser extends IUserDocument {}
-interface IUserModel extends Model<IUser> {
+interface IUserModel extends Model<IUserDocument> {
   hashPassword(password: string): string
 }
 
@@ -49,6 +49,18 @@ userSchema.static('hashPassword', (password: string): string => {
   return AES.encrypt(password, process.env.SECRET_KEY as string).toString()
 })
 
-export const User: IUserModel = model<IUser, IUserModel>('User', userSchema)
+// Instance Methods
+userSchema.method('comparePassword', function (password: string): boolean {
+  const decryptedPassword = AES.decrypt(
+    this.password,
+    process.env.SECRET_KEY as string
+  ).toString()
+  return decryptedPassword === password
+})
+
+export const User: IUserModel = model<IUserDocument, IUserModel>(
+  'User',
+  userSchema
+)
 
 export default User

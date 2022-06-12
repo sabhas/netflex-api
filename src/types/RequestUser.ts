@@ -1,5 +1,5 @@
 export interface RequestUser {
-  userId: number
+  id: number
   username: string
   isAdmin: boolean
 }

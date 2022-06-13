@@ -9,6 +9,10 @@ interface UserDetailsResponse {
 }
 
 export class UserController {
+  public async getUser(id: number): Promise<UserDetailsResponse> {
+    return getUser(id)
+  }
+
   public async updateUser(
     userId: number,
     body: UserPayload
@@ -79,4 +83,18 @@ const deleteUser = async (
   }
 
   await User.deleteOne({ id })
+}
+
+const getUser = async (id: number): Promise<UserDetailsResponse> => {
+  const user = await User.findOne({ id })
+
+  if (!user) throw new Error('User is not found.')
+
+  return {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    profilePic: user.profilePic,
+    isAdmin: user.isAdmin
+  }
 }

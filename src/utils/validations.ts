@@ -4,6 +4,15 @@ const usernameSchema = Joi.string().alphanum().min(3).max(16)
 const passwordSchema = Joi.string().min(6).max(1024)
 const emailSchema = Joi.string().email()
 
+export const registerUserValidation = (data: any): Joi.ValidationResult =>
+  Joi.object({
+    username: usernameSchema.required(),
+    password: passwordSchema.required(),
+    email: emailSchema.required(),
+    profilePic: Joi.string(),
+    isAdmin: Joi.boolean()
+  }).validate(data)
+
 export const updateUserValidation = (
   data: any,
   isAdmin: boolean = false

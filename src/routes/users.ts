@@ -59,3 +59,17 @@ userRouter.get('/:id', async (req, res) => {
     res.status(403).send(err.toString())
   }
 })
+
+// get all users (only admin can access this api endpoint)
+userRouter.get('/', verifyToken, async (req, res) => {
+  if (req.user.isAdmin) {
+    try {
+      const users = await controller.getAll()
+      res.status(200).json(users)
+    } catch (err) {
+      res.status(500).json(err)
+    }
+  } else {
+    res.status(403).json('You are not allowed to see all users!')
+  }
+})

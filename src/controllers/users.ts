@@ -1,6 +1,6 @@
 import User, { UserPayload } from 'src/models/User'
 
-interface UserDetailsResponse {
+export interface UserDetailsResponse {
   id: number
   username: string
   email: string

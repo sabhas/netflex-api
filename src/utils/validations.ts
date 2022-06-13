@@ -39,3 +39,9 @@ export const deleteUserValidation = (
           password: passwordSchema.required()
         }
   ).validate(data)
+
+export const loginValidation = (data: any): Joi.ValidationResult =>
+  Joi.object({
+    username: usernameSchema.required(),
+    password: passwordSchema.required()
+  }).validate(data)

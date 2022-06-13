@@ -13,6 +13,10 @@ export class UserController {
     return getUser(id)
   }
 
+  public async getAll(): Promise<UserDetailsResponse[]> {
+    return getAll()
+  }
+
   public async updateUser(
     userId: number,
     body: UserPayload
@@ -97,4 +101,15 @@ const getUser = async (id: number): Promise<UserDetailsResponse> => {
     profilePic: user.profilePic,
     isAdmin: user.isAdmin
   }
+}
+
+const getAll = async (): Promise<UserDetailsResponse[]> => {
+  const users = await User.find()
+  return users.map((user) => ({
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    profilePic: user.profilePic,
+    isAdmin: user.isAdmin
+  }))
 }

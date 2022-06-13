@@ -26,6 +26,7 @@ userRouter.patch('/:id', verifyToken, verifyAdminIfNeeded, async (req, res) => {
   }
 })
 
+// delete user
 userRouter.delete(
   '/:id',
   verifyToken,
@@ -46,3 +47,15 @@ userRouter.delete(
     }
   }
 )
+
+// get a user
+userRouter.get('/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const response = await controller.getUser(parseInt(id))
+    res.send(response)
+  } catch (err: any) {
+    res.status(403).send(err.toString())
+  }
+})

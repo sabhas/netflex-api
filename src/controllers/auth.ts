@@ -1,9 +1,19 @@
+import Jwt from 'jsonwebtoken'
 import User, { UserPayload } from '../models/User'
 import { UserDetailsResponse } from './users'
+
+interface LoginPayload {
+  username: string
+  password: string
+}
 
 export class AuthController {
   public async register(data: UserPayload): Promise<UserDetailsResponse> {
     return register(data)
+  }
+
+  public async login(body: LoginPayload) {
+    return login(body)
   }
 }
 
@@ -43,5 +53,28 @@ const register = async (data: UserPayload): Promise<UserDetailsResponse> => {
     email: savedUser.email,
     profilePic: savedUser.profilePic,
     isAdmin: savedUser.isAdmin
+  }
+}
+
+const login = async ({ username, password }: LoginPayload) => {
+  // Authenticate User
+  const user = await User.findOne({ username })
+  if (!user) throw new Error('Username is not found.')
+
+  const validPass = user.comparePassword(password)
+  if (!validPass) throw new Error('Invalid password.')
+
+  const userResponse = {
+    id: user.id,
+    username: user.username,
+    isAdmin: user.isAdmin
+  }
+  const accessToken = Jwt.sign(userResponse, process.env.SECRET_KEY as string, {
+    expiresIn: '5d'
+  })
+
+  return {
+    accessToken,
+    userResponse
   }
 }

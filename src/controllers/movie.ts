@@ -15,6 +15,11 @@ interface MovieResponse {
   isSeries: boolean
 }
 
+interface FindBy {
+  id?: number
+  title?: string
+}
+
 export class MovieController {
   public async createMovie(body: MoviePayload): Promise<MovieResponse> {
     return createMovie(body)
@@ -26,6 +31,10 @@ export class MovieController {
 
   public async getRandomMovie(isSeries: boolean): Promise<MovieResponse> {
     return getRandomMovie(isSeries)
+  }
+
+  public async findById(id: number): Promise<MovieResponse> {
+    return getMovie({ id })
   }
 }
 
@@ -75,6 +84,14 @@ const getRandomMovie = async (isSeries: boolean): Promise<MovieResponse> => {
   const movie = await Movie.getRandom(isSeries)
 
   if (!movie) throw new Error('something went wrong while getting movie.')
+
+  return movie
+}
+
+const getMovie = async (findBy: FindBy): Promise<MovieResponse> => {
+  const movie = await Movie.findOne(findBy)
+
+  if (!movie) throw new Error('No resource found')
 
   return movie
 }

@@ -47,3 +47,15 @@ movieRouter.get('/random', verifyToken, async (req, res) => {
     res.status(403).send(err.toString())
   }
 })
+
+// Get by id
+
+movieRouter.get('/:id', verifyToken, async (req, res) => {
+  const { id } = req.params
+  try {
+    const movie = await movieController.findById(parseInt(id))
+    res.status(200).send(movie)
+  } catch (err) {
+    res.status(403).send(err.toString())
+  }
+})

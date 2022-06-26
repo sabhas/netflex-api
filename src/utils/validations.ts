@@ -60,3 +60,8 @@ export const createMovieValidation = (data: any): Joi.ValidationResult =>
     genre: Joi.string().required(),
     isSeries: Joi.boolean()
   }).validate(data)
+
+export const getRandomMovieValidation = (data: any): Joi.ValidationResult =>
+  Joi.object({
+    isSeries: Joi.boolean().required()
+  }).validate(data)

@@ -20,7 +20,9 @@ interface IMovieDocument extends MoviePayload, Document {
 }
 
 interface IMovie extends IMovieDocument {}
-interface IMovieModel extends Model<IMovie> {}
+interface IMovieModel extends Model<IMovie> {
+  getRandom(isSeries: boolean): Promise<IMovie>
+}
 
 const movieSchema = new Schema<IMovieDocument>(
   {
@@ -43,6 +45,14 @@ const movieSchema = new Schema<IMovieDocument>(
   { timestamps: true }
 )
 movieSchema.plugin(AutoIncrement, { inc_field: 'id' })
+
+// Static Methods
+movieSchema.static('getRandom', async function (isSeries: boolean) {
+  const count = await this.count()
+  const rand = Math.floor(Math.random() * count)
+  const randomDoc = await this.findOne({ isSeries }).skip(rand)
+  return randomDoc
+})
 
 export const Movie: IMovieModel = model<IMovie, IMovieModel>(
   'Movie',

@@ -23,6 +23,10 @@ export class MovieController {
   public async getAll(): Promise<MovieResponse[]> {
     return getAll()
   }
+
+  public async getRandomMovie(isSeries: boolean): Promise<MovieResponse> {
+    return getRandomMovie(isSeries)
+  }
 }
 
 const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {
@@ -66,3 +70,11 @@ const getAll = async (): Promise<MovieResponse[]> =>
       isSeries: 1
     })
     .exec()
+
+const getRandomMovie = async (isSeries: boolean): Promise<MovieResponse> => {
+  const movie = await Movie.getRandom(isSeries)
+
+  if (!movie) throw new Error('something went wrong while getting movie.')
+
+  return movie
+}

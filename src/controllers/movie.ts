@@ -36,6 +36,10 @@ export class MovieController {
   public async findById(id: number): Promise<MovieResponse> {
     return getMovie({ id })
   }
+
+  public async findByTitle(title: string): Promise<MovieResponse> {
+    return getMovie({ title })
+  }
 }
 
 const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {

@@ -6,16 +6,16 @@ import {
   getRandomMovieValidation
 } from 'src/utils/validations'
 
-const movieRouter = Router()
-const movieController = new MovieController()
+const router = Router()
+const controller = new MovieController()
 
 // CREATE
 
-movieRouter.post('/', verifyToken, verifyAdmin, async (req, res) => {
+router.post('/', verifyToken, verifyAdmin, async (req, res) => {
   const { error, value: body } = createMovieValidation(req.body)
   if (error) return res.status(400).send(error.details[0].message)
   try {
-    const response = movieController.createMovie(body)
+    const response = controller.create(body)
     res.send(response)
   } catch (err) {
     res.status(403).send(err.toString())
@@ -24,9 +24,9 @@ movieRouter.post('/', verifyToken, verifyAdmin, async (req, res) => {
 
 // GET ALL (only admin operation)
 
-movieRouter.get('/', verifyAdmin, async (_, res) => {
+router.get('/', verifyAdmin, async (_, res) => {
   try {
-    const response = movieController.getAll()
+    const response = controller.getAll()
     res.status(200).json(response)
   } catch (err) {
     res.status(403).send(err.toString())
@@ -35,13 +35,13 @@ movieRouter.get('/', verifyAdmin, async (_, res) => {
 
 //GET RANDOM
 
-movieRouter.get('/random', verifyToken, async (req, res) => {
+router.get('/random', verifyToken, async (req, res) => {
   const { error, value: query } = getRandomMovieValidation(req.query)
   if (error) return res.status(400).send(error.details[0].message)
 
   const isSeries = query.isSeries
   try {
-    const response = movieController.getRandomMovie(isSeries)
+    const response = controller.getRandom(isSeries)
     res.status(200).send(response)
   } catch (err) {
     res.status(403).send(err.toString())
@@ -50,22 +50,22 @@ movieRouter.get('/random', verifyToken, async (req, res) => {
 
 // Get by id
 
-movieRouter.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', verifyToken, async (req, res) => {
   const { id } = req.params
   try {
-    const movie = await movieController.findById(parseInt(id))
+    const movie = await controller.findById(parseInt(id))
     res.status(200).send(movie)
   } catch (err) {
     res.status(403).send(err.toString())
   }
 })
 
-// Get by id
+// Get by title
 
-movieRouter.get('/by/title/:title', verifyToken, async (req, res) => {
+router.get('/by/title/:title', verifyToken, async (req, res) => {
   const { title } = req.params
   try {
-    const movie = await movieController.findByTitle(title)
+    const movie = await controller.findByTitle(title)
     res.status(200).send(movie)
   } catch (err) {
     res.status(403).send(err.toString())

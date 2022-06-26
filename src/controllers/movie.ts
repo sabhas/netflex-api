@@ -21,15 +21,15 @@ interface FindBy {
 }
 
 export class MovieController {
-  public async createMovie(body: MoviePayload): Promise<MovieResponse> {
+  public async create(body: MoviePayload): Promise<MovieResponse> {
     return createMovie(body)
   }
 
   public async getAll(): Promise<MovieResponse[]> {
-    return getAll()
+    return getAllMovies()
   }
 
-  public async getRandomMovie(isSeries: boolean): Promise<MovieResponse> {
+  public async getRandom(isSeries: boolean): Promise<MovieResponse> {
     return getRandomMovie(isSeries)
   }
 
@@ -66,7 +66,7 @@ const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {
   }
 }
 
-const getAll = async (): Promise<MovieResponse[]> =>
+const getAllMovies = async (): Promise<MovieResponse[]> =>
   await Movie.find({})
     .select({
       _id: 0,

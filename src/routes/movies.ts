@@ -18,3 +18,14 @@ movieRouter.post('/', verifyToken, verifyAdmin, async (req, res) => {
     res.status(403).send(err.toString())
   }
 })
+
+// GET ALL (only admin operation)
+
+movieRouter.get('/', verifyAdmin, async (_, res) => {
+  try {
+    const response = movieController.getAll()
+    res.status(200).json(response)
+  } catch (err) {
+    res.status(403).send(err.toString())
+  }
+})

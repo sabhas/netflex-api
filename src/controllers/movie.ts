@@ -19,6 +19,10 @@ export class MovieController {
   public async createMovie(body: MoviePayload): Promise<MovieResponse> {
     return createMovie(body)
   }
+
+  public async getAll(): Promise<MovieResponse[]> {
+    return getAll()
+  }
 }
 
 const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {
@@ -44,3 +48,21 @@ const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {
     isSeries: savedMovie.isSeries
   }
 }
+
+const getAll = async (): Promise<MovieResponse[]> =>
+  await Movie.find({})
+    .select({
+      _id: 0,
+      title: 1,
+      desc: 1,
+      img: 1,
+      imgTitle: 1,
+      imgSm: 1,
+      trailer: 1,
+      video: 1,
+      year: 1,
+      limit: 1,
+      genre: 1,
+      isSeries: 1
+    })
+    .exec()

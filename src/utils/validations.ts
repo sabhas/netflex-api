@@ -45,3 +45,18 @@ export const loginValidation = (data: any): Joi.ValidationResult =>
     username: usernameSchema.required(),
     password: passwordSchema.required()
   }).validate(data)
+
+export const createMovieValidation = (data: any): Joi.ValidationResult =>
+  Joi.object({
+    title: Joi.string().required(),
+    desc: Joi.string().required(),
+    img: Joi.string().required(),
+    imgTitle: Joi.string().required(),
+    imgSm: Joi.string().required(),
+    trailer: Joi.string().required(),
+    video: Joi.string().required(),
+    year: Joi.string().required(),
+    limit: Joi.string().required(),
+    genre: Joi.string().required(),
+    isSeries: Joi.boolean()
+  }).validate(data)

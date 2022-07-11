@@ -3,7 +3,8 @@ import { MovieController } from 'src/controllers'
 import { verifyToken, verifyAdmin } from 'src/middlewares'
 import {
   createMovieValidation,
-  getRandomMovieValidation
+  getRandomMovieValidation,
+  updateMovieValidation
 } from 'src/utils/validations'
 
 const router = Router()
@@ -16,6 +17,20 @@ router.post('/', verifyToken, verifyAdmin, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message)
   try {
     const response = controller.create(body)
+    res.send(response)
+  } catch (err) {
+    res.status(403).send(err.toString())
+  }
+})
+
+// UPDATE
+
+router.put('/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const { id } = req.params
+  const { error, value: body } = updateMovieValidation(req.body)
+  if (error) return res.status(400).send(error.details[0].message)
+  try {
+    const response = controller.update(parseInt(id), body)
     res.send(response)
   } catch (err) {
     res.status(403).send(err.toString())

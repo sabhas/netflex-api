@@ -25,6 +25,10 @@ export class MovieController {
     return createMovie(body)
   }
 
+  public async update(id: number, body: MoviePayload): Promise<MovieResponse> {
+    return updateMovie(id, body)
+  }
+
   public async getAll(): Promise<MovieResponse[]> {
     return getAllMovies()
   }
@@ -49,6 +53,36 @@ const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {
 
   const movie = new Movie(data)
   const savedMovie = await movie.save()
+
+  return {
+    id: savedMovie.id,
+    title: savedMovie.title,
+    desc: savedMovie.desc,
+    img: savedMovie.img,
+    imgTitle: savedMovie.imgTitle,
+    imgSm: savedMovie.imgSm,
+    trailer: savedMovie.trailer,
+    video: savedMovie.video,
+    year: savedMovie.year,
+    limit: savedMovie.limit,
+    genre: savedMovie.genre,
+    isSeries: savedMovie.isSeries
+  }
+}
+
+const updateMovie = async (
+  id: number,
+  data: Partial<MoviePayload>
+): Promise<MovieResponse> => {
+  const { title } = data
+
+  const alreadyExists = await Movie.findOne({ title })
+  if (alreadyExists)
+    throw new Error('Movie with provided title already exists.')
+
+  const savedMovie = await Movie.findOneAndUpdate({ id }, data, { new: true })
+
+  if (!savedMovie) throw new Error(`Unable to update movie with id ${id}`)
 
   return {
     id: savedMovie.id,

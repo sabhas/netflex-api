@@ -1,6 +1,6 @@
 import Movie, { MoviePayload } from 'src/models/Movie'
 
-interface MovieResponse {
+export interface MovieResponse {
   id: number
   title: string
   desc: string

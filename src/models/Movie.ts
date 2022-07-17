@@ -19,7 +19,7 @@ interface IMovieDocument extends MoviePayload, Document {
   id: number
 }
 
-interface IMovie extends IMovieDocument {}
+export interface IMovie extends IMovieDocument {}
 interface IMovieModel extends Model<IMovie> {
   getRandom(isSeries: boolean): Promise<IMovie>
 }

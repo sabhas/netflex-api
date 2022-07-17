@@ -48,7 +48,7 @@ const register = async (data: UserPayload): Promise<UserDetailsResponse> => {
   if (!savedUser) throw new Error(`Unable to create user!`)
 
   return {
-    id: savedUser.id,
+    userId: savedUser.userId,
     username: savedUser.username,
     email: savedUser.email,
     profilePic: savedUser.profilePic,

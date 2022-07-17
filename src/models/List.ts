@@ -49,6 +49,6 @@ listSchema.method('removeMovie', async function (movie: IMovie) {
   return this.save()
 })
 
-export const List: IListModel = model<IList, IListModel>('List', listSchema)
+const List: IListModel = model<IList, IListModel>('List', listSchema)
 
 export default List

@@ -1,18 +1,18 @@
 import { Router } from 'express'
-import { MovieController } from 'src/controllers'
-import { verifyToken, verifyAdmin } from 'src/middlewares'
+import { MovieController } from '../controllers'
+import { verifyToken, verifyAdmin } from '../middlewares'
 import {
   createMovieValidation,
   getRandomMovieValidation,
   updateMovieValidation
-} from 'src/utils/validations'
+} from '../utils/validations'
 
-const router = Router()
+const movieRouter = Router()
 const controller = new MovieController()
 
 // CREATE
 
-router.post('/', verifyToken, verifyAdmin, async (req, res) => {
+movieRouter.post('/', verifyToken, verifyAdmin, async (req, res) => {
   const { error, value: body } = createMovieValidation(req.body)
   if (error) return res.status(400).send(error.details[0].message)
   try {
@@ -25,7 +25,7 @@ router.post('/', verifyToken, verifyAdmin, async (req, res) => {
 
 // UPDATE
 
-router.put('/:id', verifyToken, verifyAdmin, async (req, res) => {
+movieRouter.put('/:id', verifyToken, verifyAdmin, async (req, res) => {
   const { id } = req.params
   const { error, value: body } = updateMovieValidation(req.body)
   if (error) return res.status(400).send(error.details[0].message)
@@ -39,7 +39,7 @@ router.put('/:id', verifyToken, verifyAdmin, async (req, res) => {
 
 // GET ALL (only admin operation)
 
-router.get('/', verifyAdmin, async (_, res) => {
+movieRouter.get('/', verifyAdmin, async (_, res) => {
   try {
     const response = controller.getAll()
     res.status(200).json(response)
@@ -50,7 +50,7 @@ router.get('/', verifyAdmin, async (_, res) => {
 
 //GET RANDOM
 
-router.get('/random', verifyToken, async (req, res) => {
+movieRouter.get('/random', verifyToken, async (req, res) => {
   const { error, value: query } = getRandomMovieValidation(req.query)
   if (error) return res.status(400).send(error.details[0].message)
 
@@ -65,7 +65,7 @@ router.get('/random', verifyToken, async (req, res) => {
 
 // Get by id
 
-router.get('/:id', verifyToken, async (req, res) => {
+movieRouter.get('/:id', verifyToken, async (req, res) => {
   const { id } = req.params
   try {
     const movie = await controller.findById(parseInt(id))
@@ -77,7 +77,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 
 // Get by title
 
-router.get('/by/title/:title', verifyToken, async (req, res) => {
+movieRouter.get('/by/title/:title', verifyToken, async (req, res) => {
   const { title } = req.params
   try {
     const movie = await controller.findByTitle(title)
@@ -86,3 +86,5 @@ router.get('/by/title/:title', verifyToken, async (req, res) => {
     res.status(403).send(err.toString())
   }
 })
+
+export default movieRouter

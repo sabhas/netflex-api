@@ -1,7 +1,7 @@
-import Movie, { MoviePayload } from 'src/models/Movie'
+import Movie, { MoviePayload } from '../models/Movie'
 
 export interface MovieResponse {
-  id: number
+  movieId: number
   title: string
   desc: string
   img: string
@@ -16,7 +16,7 @@ export interface MovieResponse {
 }
 
 interface FindBy {
-  id?: number
+  movieId?: number
   title?: string
 }
 
@@ -38,7 +38,7 @@ export class MovieController {
   }
 
   public async findById(id: number): Promise<MovieResponse> {
-    return getMovie({ id })
+    return getMovie({ movieId: id })
   }
 
   public async findByTitle(title: string): Promise<MovieResponse> {
@@ -55,7 +55,7 @@ const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {
   const savedMovie = await movie.save()
 
   return {
-    id: savedMovie.id,
+    movieId: savedMovie.movieId,
     title: savedMovie.title,
     desc: savedMovie.desc,
     img: savedMovie.img,
@@ -71,7 +71,7 @@ const createMovie = async (data: MoviePayload): Promise<MovieResponse> => {
 }
 
 const updateMovie = async (
-  id: number,
+  movieId: number,
   data: Partial<MoviePayload>
 ): Promise<MovieResponse> => {
   const { title } = data
@@ -80,12 +80,14 @@ const updateMovie = async (
   if (alreadyExists)
     throw new Error('Movie with provided title already exists.')
 
-  const savedMovie = await Movie.findOneAndUpdate({ id }, data, { new: true })
+  const savedMovie = await Movie.findOneAndUpdate({ movieId }, data, {
+    new: true
+  })
 
-  if (!savedMovie) throw new Error(`Unable to update movie with id ${id}`)
+  if (!savedMovie) throw new Error(`Unable to update movie with id ${movieId}`)
 
   return {
-    id: savedMovie.id,
+    movieId: savedMovie.movieId,
     title: savedMovie.title,
     desc: savedMovie.desc,
     img: savedMovie.img,
@@ -104,6 +106,7 @@ const getAllMovies = async (): Promise<MovieResponse[]> =>
   await Movie.find({})
     .select({
       _id: 0,
+      movieId: 1,
       title: 1,
       desc: 1,
       img: 1,

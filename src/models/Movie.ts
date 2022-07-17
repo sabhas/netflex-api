@@ -1,6 +1,5 @@
 import mongoose, { Schema, model, Document, Model } from 'mongoose'
 const AutoIncrement = require('mongoose-sequence')(mongoose)
-
 export interface MoviePayload {
   title: string
   desc: string
@@ -16,35 +15,34 @@ export interface MoviePayload {
 }
 
 interface IMovieDocument extends MoviePayload, Document {
-  id: number
+  movieId: number
 }
 
 export interface IMovie extends IMovieDocument {}
+
 interface IMovieModel extends Model<IMovie> {
   getRandom(isSeries: boolean): Promise<IMovie>
 }
 
-const movieSchema = new Schema<IMovieDocument>(
-  {
-    title: {
-      type: String,
-      required: true,
-      unique: true
-    },
-    desc: { type: String },
-    img: { type: String },
-    imgTitle: { type: String },
-    imgSm: { type: String },
-    trailer: { type: String },
-    video: { type: String },
-    year: { type: String },
-    limit: { type: Number },
-    genre: { type: String },
-    isSeries: { type: Boolean, default: false }
+const movieSchema = new Schema<IMovieDocument>({
+  title: {
+    type: String,
+    required: true,
+    unique: true
   },
-  { timestamps: true }
-)
-movieSchema.plugin(AutoIncrement, { inc_field: 'id' })
+  desc: { type: String },
+  img: { type: String },
+  imgTitle: { type: String },
+  imgSm: { type: String },
+  trailer: { type: String },
+  video: { type: String },
+  year: { type: String },
+  limit: { type: Number },
+  genre: { type: String },
+  isSeries: { type: Boolean, default: false }
+})
+
+movieSchema.plugin(AutoIncrement, { inc_field: 'movieId' })
 
 // Static Methods
 movieSchema.static('getRandom', async function (isSeries: boolean) {
@@ -54,9 +52,6 @@ movieSchema.static('getRandom', async function (isSeries: boolean) {
   return randomDoc
 })
 
-export const Movie: IMovieModel = model<IMovie, IMovieModel>(
-  'Movie',
-  movieSchema
-)
+const Movie: IMovieModel = model<IMovie, IMovieModel>('Movie', movieSchema)
 
 export default Movie

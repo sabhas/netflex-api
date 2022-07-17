@@ -1,9 +1,17 @@
-const addition = (a: number, b: number): number => {
-  return a + b
-}
+import express from 'express'
+import dotenv from 'dotenv'
 
-const number1: number = 5
-const number2: number = 10
-const result: number = addition(number1, number2)
+import router from './routes'
 
-console.log("The result is %d", result)
+dotenv.config()
+
+const app = express()
+
+app.use(express.json())
+
+app.use('/api', router)
+
+const port = process.env.PORT ?? 5000
+app.listen(port, () => {
+  console.log(`Server is running at port ${port}!`)
+})

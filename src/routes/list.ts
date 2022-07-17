@@ -1,16 +1,16 @@
 import { Router } from 'express'
-import { verifyToken, verifyAdmin } from 'src/middlewares'
-import { ListController } from 'src/controllers'
+import { verifyToken, verifyAdmin } from '../middlewares'
+import { ListController } from '../controllers'
 import {
   createListValidation,
   updateListValidation,
   getListValidation
-} from 'src/utils/validations'
+} from '../utils/validations'
 
-const router = Router()
+const listRouter = Router()
 const controller = new ListController()
 
-router.get('/', verifyToken, async (req, res) => {
+listRouter.get('/', verifyToken, async (req, res) => {
   const { error, value: body } = createListValidation(req.query)
   if (error) return res.status(400).send(error.details[0].message)
 
@@ -24,7 +24,7 @@ router.get('/', verifyToken, async (req, res) => {
 
 // CREATE
 
-router.post('/', verifyToken, verifyAdmin, async (req, res) => {
+listRouter.post('/', verifyToken, verifyAdmin, async (req, res) => {
   const { error, value: query } = getListValidation(req.body)
   if (error) return res.status(400).send(error.details[0].message)
   try {
@@ -37,7 +37,7 @@ router.post('/', verifyToken, verifyAdmin, async (req, res) => {
 
 // Update
 
-router.post('/', verifyToken, verifyAdmin, async (req, res) => {
+listRouter.post('/', verifyToken, verifyAdmin, async (req, res) => {
   const { id } = req.params
   const { error, value: body } = updateListValidation(req.body)
   if (error) return res.status(400).send(error.details[0].message)
@@ -51,22 +51,27 @@ router.post('/', verifyToken, verifyAdmin, async (req, res) => {
 
 // Add movie to list
 
-router.post('/:listId/:movieId', verifyToken, verifyAdmin, async (req, res) => {
-  const { listId, movieId } = req.params
-  try {
-    const response = await controller.addMovieToList(
-      parseInt(listId),
-      parseInt(movieId)
-    )
-    res.send(response)
-  } catch (err) {
-    res.status(403).send(err.toString())
+listRouter.post(
+  '/:listId/:movieId',
+  verifyToken,
+  verifyAdmin,
+  async (req, res) => {
+    const { listId, movieId } = req.params
+    try {
+      const response = await controller.addMovieToList(
+        parseInt(listId),
+        parseInt(movieId)
+      )
+      res.send(response)
+    } catch (err) {
+      res.status(403).send(err.toString())
+    }
   }
-})
+)
 
 // Remove movie from list
 
-router.delete(
+listRouter.delete(
   '/:listId/:movieId',
   verifyToken,
   verifyAdmin,
@@ -86,7 +91,7 @@ router.delete(
 
 // DELETE
 
-router.delete('/:id', verifyToken, verifyAdmin, async (req, res) => {
+listRouter.delete('/:id', verifyToken, verifyAdmin, async (req, res) => {
   const { id } = req.params
   try {
     await controller.delete(parseInt(id))
@@ -95,3 +100,5 @@ router.delete('/:id', verifyToken, verifyAdmin, async (req, res) => {
     res.status(403).send(err.toString())
   }
 })
+
+export default listRouter

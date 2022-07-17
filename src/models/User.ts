@@ -11,7 +11,7 @@ export interface UserPayload {
 }
 
 interface IUserDocument extends UserPayload, Document {
-  id: number
+  userId: number
   comparePassword(password: string): string
 }
 
@@ -19,30 +19,27 @@ interface IUserModel extends Model<IUserDocument> {
   hashPassword(password: string): string
 }
 
-const userSchema = new Schema<IUserDocument>(
-  {
-    username: {
-      type: String,
-      required: true,
-      unique: true
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true
-    },
-    password: {
-      type: String,
-      required: true
-    },
-    isAdmin: {
-      type: Boolean,
-      default: false
-    }
+const userSchema = new Schema<IUserDocument>({
+  username: {
+    type: String,
+    required: true,
+    unique: true
   },
-  { timestamps: true }
-)
-userSchema.plugin(AutoIncrement, { inc_field: 'id' })
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
+})
+userSchema.plugin(AutoIncrement, { inc_field: 'userId' })
 
 // Static Methods
 userSchema.static('hashPassword', (password: string): string => {
@@ -58,9 +55,6 @@ userSchema.method('comparePassword', function (password: string): boolean {
   return decryptedPassword === password
 })
 
-export const User: IUserModel = model<IUserDocument, IUserModel>(
-  'User',
-  userSchema
-)
+const User: IUserModel = model<IUserDocument, IUserModel>('User', userSchema)
 
 export default User

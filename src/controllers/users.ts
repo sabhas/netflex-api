@@ -1,7 +1,7 @@
-import User, { UserPayload } from 'src/models/User'
+import User, { UserPayload } from '../models/User'
 
 export interface UserDetailsResponse {
-  id: number
+  userId: number
   username: string
   email: string
   profilePic: string
@@ -34,7 +34,7 @@ export class UserController {
 }
 
 const updateUser = async (
-  id: number,
+  userId: number,
   data: UserPayload
 ): Promise<UserDetailsResponse> => {
   const { username, email, password, profilePic, isAdmin } = data
@@ -44,14 +44,15 @@ const updateUser = async (
   if (username) {
     // Checking if user is already in the database
     const user = await User.findOne({ username })
-    if (user && user.id !== id) throw new Error('Username already exists.')
+    if (user && user.userId !== userId)
+      throw new Error('Username already exists.')
     params.username = username
   }
 
   if (email) {
     // Checking if user is already in the database
     const user = await User.findOne({ email })
-    if (user && user.id !== id) throw new Error('Email already exists.')
+    if (user && user.id !== userId) throw new Error('Email already exists.')
     params.username = username
   }
 
@@ -60,12 +61,14 @@ const updateUser = async (
     params.password = User.hashPassword(password)
   }
 
-  const updatedUser = await User.findOneAndUpdate({ id }, params, { new: true })
+  const updatedUser = await User.findOneAndUpdate({ userId }, params, {
+    new: true
+  })
 
-  if (!updatedUser) throw new Error(`Unable to find user with id: ${id}`)
+  if (!updatedUser) throw new Error(`Unable to find user with id: ${userId}`)
 
   return {
-    id: updatedUser.id,
+    userId: updatedUser.userId,
     username: updatedUser.username,
     email: updatedUser.email,
     profilePic: updatedUser.profilePic,
@@ -74,11 +77,11 @@ const updateUser = async (
 }
 
 const deleteUser = async (
-  id: number,
+  userId: number,
   isAdmin: boolean,
   { password }: { password?: string }
 ) => {
-  const user = await User.findOne({ id })
+  const user = await User.findOne({ userId })
   if (!user) throw new Error('User is not found.')
 
   if (!isAdmin) {
@@ -86,16 +89,16 @@ const deleteUser = async (
     if (!validPass) throw new Error('Invalid password.')
   }
 
-  await User.deleteOne({ id })
+  await User.deleteOne({ userId })
 }
 
-const getUser = async (id: number): Promise<UserDetailsResponse> => {
-  const user = await User.findOne({ id })
+const getUser = async (userId: number): Promise<UserDetailsResponse> => {
+  const user = await User.findOne({ userId })
 
   if (!user) throw new Error('User is not found.')
 
   return {
-    id: user.id,
+    userId: user.userId,
     username: user.username,
     email: user.email,
     profilePic: user.profilePic,
@@ -106,7 +109,7 @@ const getUser = async (id: number): Promise<UserDetailsResponse> => {
 const getAll = async (): Promise<UserDetailsResponse[]> => {
   const users = await User.find()
   return users.map((user) => ({
-    id: user.id,
+    userId: user.userId,
     username: user.username,
     email: user.email,
     profilePic: user.profilePic,

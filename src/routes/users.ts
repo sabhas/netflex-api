@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import { UserController } from 'src/controllers'
-import { verifyToken, verifyAdminIfNeeded } from 'src/middlewares'
+import { UserController } from '../controllers'
+import { verifyToken, verifyAdminIfNeeded } from '../middlewares'
 import {
   updateUserValidation,
   deleteUserValidation
-} from 'src/utils/validations'
+} from '../utils/validations'
 
 const userRouter = Router()
 const controller = new UserController()
@@ -73,3 +73,5 @@ userRouter.get('/', verifyToken, async (req, res) => {
     res.status(403).json('You are not allowed to see all users!')
   }
 })
+
+export default userRouter

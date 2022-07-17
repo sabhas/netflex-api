@@ -1,5 +1,5 @@
-import List, { ListPayload } from 'src/models/List'
-import Movie from 'src/models/Movie'
+import List, { ListPayload } from '../models/List'
+import Movie from '../models/Movie'
 import { MovieResponse } from './movie'
 
 export interface ListResponse {

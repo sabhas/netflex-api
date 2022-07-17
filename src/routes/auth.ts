@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { AuthController } from '../controllers'
-import { registerUserValidation, loginValidation } from 'src/utils/validations'
+import { registerUserValidation, loginValidation } from '../utils/validations'
 
 const authRouter = Router()
 const controller = new AuthController()
@@ -29,3 +29,5 @@ authRouter.post('/login', async (req, res) => {
     res.status(403).send(err.toString())
   }
 })
+
+export default authRouter

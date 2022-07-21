@@ -11,10 +11,11 @@ authRouter.post('/register', async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message)
 
   try {
-    const user = controller.register(body)
-    res.status(201).json(user)
+    const user = await controller.register(body)
+    res.send(user)
   } catch (err) {
-    res.status(500).json(err)
+    console.log(`[err]`, err)
+    res.status(400).send(err.toString())
   }
 })
 
@@ -26,7 +27,7 @@ authRouter.post('/login', async (req, res) => {
     const response = await controller.login(body)
     res.send(response)
   } catch (err: any) {
-    res.status(403).send(err.toString())
+    res.status(400).send(err.toString())
   }
 })
 

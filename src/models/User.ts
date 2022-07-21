@@ -1,4 +1,4 @@
-import { AES } from 'crypto-js'
+import { AES, enc as encoding } from 'crypto-js'
 import mongoose, { Schema, model, Document, Model } from 'mongoose'
 const AutoIncrement = require('mongoose-sequence')(mongoose)
 
@@ -51,7 +51,7 @@ userSchema.method('comparePassword', function (password: string): boolean {
   const decryptedPassword = AES.decrypt(
     this.password,
     process.env.SECRET_KEY as string
-  ).toString()
+  ).toString(encoding.Utf8)
   return decryptedPassword === password
 })
 

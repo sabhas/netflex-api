@@ -33,7 +33,7 @@ const register = async (data: UserPayload): Promise<UserDetailsResponse> => {
     // Checking if user is already in the database
     const user = await User.findOne({ email })
     if (user) throw new Error('Email already exists.')
-    params.username = username
+    params.email = email
   }
 
   if (password) {
